@@ -3,7 +3,7 @@ from datetime import datetime
 import csv
 import json
 
-def is_valid(row):
+def is_valid(row: list)->bool:
     try:
         datetime.strptime(row['date'], '%Y-%m-%d')
         str(row['product'])
@@ -15,7 +15,7 @@ def is_valid(row):
         return False
     return True
 
-def build_report(csv_path):
+def build_report(csv_path: Path)->dict:
     
     reader = csv.DictReader(csv_path.read_text('UTF-8').splitlines())
 
