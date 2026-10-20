@@ -10,7 +10,12 @@ def test_normal(tmp_path):
     '2026-10-03,Круассан,4,150' , encoding='utf-8')
 
     report = build_report(csv_file)
-    assert report.get('invalid_rows') == []
+    assert report == {
+        'total_revenue': 2300,
+        'product_revenue': {'Кофе': 1400, 'Чай': 300, 'Круассан': 600},
+        'top_product': 'Кофе',
+        'invalid_rows': [],
+    }
 
 
 def test_all_rows_invalid(tmp_path):

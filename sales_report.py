@@ -3,7 +3,7 @@ from datetime import datetime
 import csv
 import json
 
-def is_valid(row: list)->bool:
+def is_valid(row: dict)->bool:
     try:
         datetime.strptime(row['date'], '%Y-%m-%d')
         str(row['product'])
@@ -28,7 +28,6 @@ def build_report(csv_path: Path)->dict:
     for row_num,row in enumerate(reader, start=2):
         if not is_valid(row):
             invalid_rows.append(row_num)
-            print(f'Обнаружена битая строка под номером {row_num}')
             continue
 
         product = row['product']
