@@ -15,7 +15,7 @@ def is_valid(row):
 
 def build_report(csv_path):
     
-    reader = csv.DictReader(path.read_text('UTF-8').splitlines())
+    reader = csv.DictReader(csv_path.read_text('UTF-8').splitlines())
 
     total_revenue = 0
     product_revenue = {}
@@ -54,7 +54,9 @@ def build_report(csv_path):
     return report
 
 
-path = Path('sales.csv')
-json_path = Path('report.json')
-report = build_report(path)
-json_path.write_text(json.dumps(report, ensure_ascii=False, indent=4), 'UTF-8')
+def save_report(report: dict, json_path: Path) -> None:
+    json_path.write_text(json.dumps(report, ensure_ascii=False, indent=4), 'UTF-8')
+
+if __name__ == '__main__':
+    report = build_report(Path('sales.csv'))
+    save_report(report, Path('report.json'))
