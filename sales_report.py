@@ -11,7 +11,7 @@ def is_valid(row):
         int(row['price'])
     except (TypeError, ValueError, KeyError):
         return False
-    if not row['product']:
+    if not row['product'] or int(row['quantity']) <= 0 or int(row['price']) <= 0:
         return False
     return True
 
@@ -19,17 +19,16 @@ def build_report(csv_path):
     
     reader = csv.DictReader(csv_path.read_text('UTF-8').splitlines())
 
-    total_revenue = 0
     product_revenue = {}
-    product_selled_amount = {}
+    product_sold_amount = {}
     invalid_rows = []
 
-    row_num = 0
     total_revenue = 0
 
     for row_num,row in enumerate(reader, start=2):
         if not is_valid(row):
             invalid_rows.append(row_num)
+            print(f'Обнаружена битая строка под номером {row_num}')
             continue
 
         product = row['product']
@@ -38,10 +37,10 @@ def build_report(csv_path):
 
         total_revenue += revenue
         product_revenue[product] = product_revenue.get(product,0) + revenue
-        product_selled_amount[product] = product_selled_amount.get(product, 0) + quantity
+        product_sold_amount[product] = product_sold_amount.get(product, 0) + quantity
 
-    if product_selled_amount:
-        top_product = max(product_selled_amount, key=lambda product: product_selled_amount[product])
+    if product_sold_amount:
+        top_product = max(product_sold_amount, key=lambda product: product_sold_amount[product])
     else:
         top_product = None
 
