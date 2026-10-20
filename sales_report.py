@@ -1,0 +1,60 @@
+from pathlib import Path
+from datetime import datetime
+import csv
+import json
+
+def is_valid(row):
+    try:
+        datetime.strptime(row['date'], '%Y-%m-%d')
+        str(row['product'])
+        int(row['quantity'])
+        int(row['price'])
+    except (TypeError, ValueError, KeyError):
+        return False
+    return True
+
+def build_report(csv_path):
+    
+    reader = csv.DictReader(path.read_text('UTF-8').splitlines())
+
+    total_revenue = 0
+    product_revenue = {}
+    product_selled_amount = {}
+    invalid_rows = []
+
+    row_num = 0
+    total_revenue = 0
+
+    for row in reader:
+        row_num += 1
+
+        if not is_valid(row):
+            invalid_rows.append(row_num)
+            continue
+
+        product = row['product']
+        quantity = int(row['quantity'])
+        revenue = quantity * int(row['price'])
+
+        total_revenue += revenue
+        product_revenue[product] = product_revenue.get(product,0) + revenue
+        product_selled_amount[product] = product_selled_amount.get(product, 0) + quantity
+
+    if product_selled_amount:
+        top_product = max(product_selled_amount, key=lambda product: product_selled_amount[product])
+    else:
+        top_product = None
+
+    report = {
+        'total_revenue' : total_revenue,
+        'product_revenue': product_revenue,
+        'top_product': top_product,
+        'invalid_rows': invalid_rows
+    }
+    return report
+
+
+path = Path('sales.csv')
+json_path = Path('report.json')
+report = build_report(path)
+json_path.write_text(json.dumps(report, ensure_ascii=False, indent=4), 'UTF-8')
