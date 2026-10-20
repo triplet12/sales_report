@@ -11,6 +11,8 @@ def is_valid(row):
         int(row['price'])
     except (TypeError, ValueError, KeyError):
         return False
+    if not row['product']:
+        return False
     return True
 
 def build_report(csv_path):
@@ -25,9 +27,7 @@ def build_report(csv_path):
     row_num = 0
     total_revenue = 0
 
-    for row in reader:
-        row_num += 1
-
+    for row_num,row in enumerate(reader, start=2):
         if not is_valid(row):
             invalid_rows.append(row_num)
             continue
